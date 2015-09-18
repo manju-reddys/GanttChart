@@ -1,0 +1,33 @@
+{
+    "name": "GanttChart",
+    "version": "0.1.0",
+    "homepage": "https://github.com/manju-reddys/GanttChart",
+    "description": "GanttChart Viewer",
+    "moduleType": [
+        "amd",
+        "globals",
+        "node"
+    ],
+    "keywords": [
+        "Gantt",
+        "HTML",
+        "Gantt",
+        "Gantt",
+        "chart"
+    ],
+    "authors": [
+        "Manjunath Reddy"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "jquery": "1.11.1",
+        "bootstrap": "3.3.5"
+    }
+}

@@ -1,0 +1,28 @@
+<table class="gtasktableh">
+  <tbody>
+  <tr>
+    <td class="gtasklist">&nbsp;</td>
+    <td class="gspanning gtaskname">
+        {{#if showSelector}}
+          <div class="gselector"></div>
+        {{else}}
+          <div class="gselector">{{selectorLabel}}:
+              {{#each views}}
+                <span class="{{cssClass}}" id="{{id}}">{{text}}</span>
+              {{/each}}
+          </div>
+        {{/if}}
+    </td>
+      {{#each taskLables}}
+        <td class="{{cssClass}}">{{text}}</td>
+      {{/each}}
+  </tr>
+  <tr>
+    <td class="gtasklist">&nbsp;</td>
+    <td class="gtaskname">&nbsp;</td>
+      {{#each taskHeaders}}
+        <td class="{{cssClass}}">{{text}}</td>
+      {{/each}}
+  </tr>
+  </tbody>
+</table>
