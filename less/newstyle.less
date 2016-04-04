@@ -1,0 +1,106 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    padding: 8px;
+    background-color: #F6F6F6;
+    box-sizing: border-box;
+}
+
+.gc-cell {
+    border: 1px solid @graph-grid-color;
+    height: 19px;
+    cursor: default;
+    font-size: 12px;
+}
+.gc-view {
+    li {
+        list-style-type: none; 
+        display: inline;
+
+        a {
+            text-decoration: inherit;
+            &.active {
+                text-decoration: overline;
+                pointer-events: none;
+            }
+        }
+    }
+}
+.gc-verticle-line {
+    border-left: 1px solid @line-color;
+    width: 0px;
+}
+.gc-horizontal-line {
+    border-top: 1px solid @line-color;
+    height: 0px;
+}
+.gc-milestone {
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-bottom-color: @milstone-color;
+    position: relative;
+    top: -8px;
+
+    &:after {
+        content: '';
+        position: absolute;
+        left: -8px;
+        top: 8px;
+        width: 0;
+        height: 0;
+        border: 8px solid transparent;
+        border-top-color: @milstone-color;
+    }
+}
+
+.gc-arrow {
+    border-style: solid;
+    border-width: 5px;
+    height: 0;
+    overflow: hidden;
+    margin-top: 14px;
+    width: 0;
+    &.gc-down {
+        border-color: @arrow-border-color transparent transparent;
+    }
+    &.gc-up {
+        border-color: transparent transparent @arrow-border-color;
+    }
+}
+
+
+
+.gc-split {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+.gc-split-content {
+    border: 1px solid #C0C0C0;
+    box-shadow: inset 0 1px 2px #e4e4e4;
+    background-color: #fff;
+}
+.gc-split-gutter {
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    &.gc-gutter-horizontal {
+        cursor: col-resize;
+        background-image: url('../images/vertical.png');
+    }
+    &.gc-gutter-vertical {
+        cursor: row-resize;
+        background-image: url('../images/horizontal.png');
+    }
+}
+.gc-split.gc-split-horizontal, 
+.gc-gutter.gc-gutter-horizontal {
+    height: 100%;
+    float: left;
+}

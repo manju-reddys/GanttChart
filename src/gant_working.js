@@ -194,7 +194,7 @@
                     ele.setAttribute(prop, attrs[prop]);
                 });
             }
-            return ele;
+            return utils.isElement(ele) ? extEle(ele) : ele;
         }
         return {
             tr: function (attrs) {
@@ -208,6 +208,9 @@
             },
             table: function (attrs) {
                 return addAttrs(ce('table'), attrs);
+            },
+            thead: function(attrs) {
+                return addAttrs(ce('thead'), attrs);
             },
             tbody: function (attrs) {
                 return addAttrs(ce('tbody'), attrs);
@@ -228,17 +231,22 @@
                 return this.isElement(element) ?
                         element.getElementById(id) :
                         document.getElementById(id);
+            },
+            ul: function (attrs) {
+                return addAttrs(ce('ul'), attrs);
+            },
+            li: function (attrs) {
+                return addAttrs(ce('li'), attrs);
+            },
+            a: function (attrs) {
+                return addAttrs(ce('a'), attrs);
             }
         }();
     };
     var template = function () {
-        var template = Dom.div({class: 'gchartcontainer'});
-        template.appendChild(Dom.div({class: 'gchartlbl gcontainercol right-header'}));
-        template.appendChild(Dom.div({class: 'glistlbl gcontainercol left-header'}));
-        template.appendChild(Dom.div({class: 'glabelfooter'}));
-        template.appendChild(Dom.div({class: 'gchartgrid gcontainercol right-body'}));
-        template.appendChild(Dom.div({class: 'glistgrid gcontainercol left-body'}));
-        template.appendChild(Dom.div({class: 'ggridfooter'}));
+        var template = Dom.div({class: 'gc-container'});
+        template.appendChild(Dom.div({class: 'gc-panel gc-split gc-split-horizontal'}));
+        template.appendChild(Dom.div({class: 'gc-graph gc-split gc-split-horizontal'}));
         return template;
     };
 
@@ -267,7 +275,7 @@
             })();
         }
     })();
-    (function (e) {
+    function extEle(e) {
         e.matchs = e.matches ||
                 e.matchesSelector ||
                 e.webkitMatchesSelector ||
@@ -334,13 +342,18 @@
                     obj[attrs[i].name] = attrs[i].value;
                 }
                 return obj;
-            } else if(utils.isObject(attrs)){
+            } else if (utils.isObject(attrs)) {
                 return Dom.attrs(this, attrs);
             } else {
                 return null;
             }
         };
-    })(Element.prototype);
+        e.append = e.appendChild;
+        e.appendTo = function(pe){
+            pe.appendChild(this);
+            return this;
+        };
+    };
     /**
      * Add format function to the date field.
      * @param {Date} dt object
@@ -559,85 +572,12 @@
 
         var $original = element.cloneNode(true);
 
+        element.innerHTML = template();
+
         var VC = {
-            ID_CHILD: instanceId + 'child_',
-            ID_CHILD_ROW: instanceId + 'childrow_',
-            ID_TASK_CONTAINER: instanceId + 'bardiv_',
-            ID_TASK_BAR: instanceId + 'taskbar_',
-            ID_TOOLTIP_TASK_BAR: 'tt' + instanceId + 'taskbar_',
-            ID_TOOLTIP_COMPLETE: 'tt' + 'complete_',
-            ID_COMPLETE: instanceId + 'complete_',
-            ID_LINE: instanceId + 'line',
-            ID_CHART_TABLE: instanceId + 'chartTable',
-            ID_CHART_TABLE_HEADER: instanceId + 'chartTableh',
-            ID_GROUP: instanceId + 'group_',
-            ID_FORMAT: instanceId + 'format',
-            ID_FORMAT_HOUR: instanceId + 'formathour',
-            ID_FORMAT_DAY: instanceId + 'formatday',
-            ID_FORMAT_WEEK: instanceId + 'formatweek',
-            ID_FORMAT_MONTH: instanceId + 'formatmonth',
-            ID_FORMAT_QUARTER: instanceId + 'formatquarter',
-            CLASS_MILE_ITEM: 'gmileitem',
-            CLASS_MILE: 'gmile',
-            CLASS_TASK_CELL: 'gtaskcell',
-            CLASS_TASK_CELL_DIV: 'gtaskcelldiv',
-            CLASS_TASK_BAR_CONTAINER: 'gtaskbarcontainer',
-            CLASS_MILE_DIAMOND: 'gmilediamond', //Milestone?
-            CLASS_MILE_DIAMOND_TOP: 'gmdtop',
-            CLASS_MILE_DIAMOND_BOTTOM: 'gmdbottom',
-            CLASS_MILE_CAPTION: 'gmilecaption',
-            CLASS_TASK_CELL_WEEKEND: 'gtaskcellwkend',
-            CLASS_LINE_ITEM: 'glineitem',
-            CLASS_ITEM: 'gitem',
-            CLASS_GROUP_ITEM: 'ggroupitem',
-            CLASS_GROUP: 'ggroup',
-            CLASS_COMPLETE: 'complete',
-            CLASS_END_POINT_LEFT: 'endpointleft',
-            CLASS_END_POINT_RIGHT: 'endpointright',
-            CLASS_GROUP_CAPTION: 'ggroupcaption',
-            CLASS_GRID_FOOTER: 'ggridfooter',
-            CLASS_SPANNING: 'gspanning',
-            CLASS_TASK_RESOURCE: 'gresource',
-            CLASS_TASK_HEADING: 'gtaskheading',
-            CLASS_TASK_DURATION: 'gduration',
-            CLASS_TASK_COMPLETE: 'gpccomplete',
-            CLASS_TASK_START_DATE: 'gstartdate',
-            CLASS_TASK_END_DATE: 'genddate',
-            CLASS_MAJOR_HEADING: 'gmajorheading',
-            CLASS_MINOR_HEADING: 'gminorheading',
-            CLASS_WEEK_END: 'wkend',
-            CLASS_VERTICAL_LINE: 'glinev',
-            CLASS_HORIZONTAL_LINE: 'glineh',
-            CLASS_ITEM_HIGHLIGHT: 'gitemhighlight',
-            CLASS_TASK_NOTES: 'gTaskNotes',
-            CLASS_GROUP_BLACK: 'ggroupblack',
-            CLASS_MILE_STONE: 'gmilestone',
-            CLASS_TASK_BLUE: 'gtaskblue',
-            CLASS_TASK_TABLE_HEADER: 'gtasktableh',
-            CLASS_TASK_LIST: 'gtasklist',
-            CLASS_TASK_TABLE: 'gtasktable',
-            CLASS_TASK_NAME: 'gtaskname',
-            CLASS_SELECTOR: 'gselector',
-            CLASS_FORM_LABEL: 'gformlabel',
-            CLASS_SELECTED: 'gselected',
-            CLASS_TI_TITLE: 'gTtTitle',
-            CLASS_TI_SD: 'gTIsd',
-            CLASS_TI_ED: 'gTIed',
-            CLASS_TASK_INFO: 'gTaskInfo',
-            CLASS_TASK_LABEL: 'gTaskLabel',
-            CLASS_TASK_TEXT: 'gTaskText',
-            CLASS_TI_LINE: 'gTILine',
-            CLASS_TI_D: 'gTId',
-            CLASS_TI_C: 'gTIc',
-            CLASS_TI_R: 'gTIr',
-            CLASS_TI_L: 'gTIl',
-            CLASS_TI_N: 'gTIn',
-            CLASS_NAME: 'gname',
-            CLASS_FOLDER_COLLAPSE: 'gfoldercollapse',
-            CLASS_CHART_TABLE: 'gcharttable',
-            CLASS_CHART_TABLE_HEADER: 'gcharttableh',
-            CLASS_RT_HEADER_PAD: 'rhscrpad',
-            CLASS_CAPTION: 'gcaption',
+            CLASS_VIEWS: 'gc-views',
+            CLASS_CELL: 'gc-cell',
+            CLASS_ROW: 'gc-row',
             FORMAT_HOUR: 'hour',
             FORMAT_DAY: 'day',
             FORMAT_WEEK: 'week',
@@ -653,21 +593,13 @@
             getView: function () {
                 return element;
             },
-            getChartHeader: function () {
+            getGraph: function () {
                 return this.getView()
-                        .getElementsByClassName('.right-header')[0];
+                        .getElementsByClassName('.gc-graph')[0];
             },
-            getPanelHeader: function () {
+            getPanel: function () {
                 return this.getView()
-                        .getElementsByClassName('.left-header')[0];
-            },
-            getChartBody: function () {
-                return this.getView()
-                        .getElementsByClassName('.right-body')[0];
-            },
-            getPanelBody: function () {
-                return this.getView()
-                        .getElementsByClassName('.left-body')[0];
+                        .getElementsByClassName('.gc-panel')[0];
             },
             getProperties: function () {
                 return Object.assign(instOptions);
@@ -690,7 +622,7 @@
             getTasks: function () {
                 return taskList;
             },
-            getTaskSize: function () {
+            getSize: function () {
                 return taskList.length;
             },
             switchView: function (view) {
@@ -974,15 +906,23 @@
 
         function drawViews() {
             var views = options.views;
-            var $ele = Dom.div({class: VC.CLASS_SELECTOR}).appendChild(TN('Format:'));
-            views.forEach(function(view) {
-                $ele.appendChild();
+            var $ele = Dom.ul({class: VC.CLASS_VIEWS});
+            views.forEach(function (view) {
+                $ele.appendChild(
+                        Dom.li().appendChild(
+                        Dom.a().appendChild(TN(view))
+                        ));
             });
+            return $ele;
         }
-        function renderPanelHeader() {
-            var lang = this.getProperty('lang'),
-                    langs = this.getProperty('langs.' + lang);
-            var panel = Dom.table();
+
+        function panelHeader() {
+            var table = Dom.table(),
+                header = Dom.thead();
+                
+            header.append(Dom.tr().append(Dom.th().append(drawViews())));
+            table.append(header);
+            header.append(Dom.tr());
         }
     }
 
@@ -998,7 +938,7 @@
                 element = Dom.getById(element);
             }
             if (!Dom.isElement(element)) {
-                throw new Error(' Element undefined');
+                throw new Error('Element undefined');
             }
 
             var instanceId = utils.getUUID(5);
