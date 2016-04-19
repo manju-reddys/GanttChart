@@ -2,9 +2,7 @@
 
 (function (root, factory) {
     'use strict';
-    if (typeof module === 'object' && module.exports) {
-        module.exports = factory();
-    } else if (typeof define === 'function' && define.amd) {
+    if (typeof define === 'function' && define.amd) {
         define(factory);
     } else {
         root.GanttChart = factory();
@@ -147,7 +145,8 @@
             return optc(b) === '[object Boolean]';
         },
         isNumber: function (n) {
-            return optc(n) === '[object Number]';
+            //see jquery source
+            return !this.isArray(n) && (n - parseFloat(n) + 1) >= 0;
         },
         isNull: function (n) {
             return optc(n) === '[object Null]';
@@ -185,6 +184,20 @@
             return (Math.random()
                     .toString(16) + '0000000000')
                     .substr(2, d || 10);
+        },
+        toDate: function (str) {
+            if (this.isString(str) || this.isNumber(str)) {
+                var date = Date.parse(str);
+                if (this.isNumber(date)) {
+                    return wrapDateFn(new Date(date));
+                } else {
+                    throw new Error('Invalid date, see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/parse for supported date format');
+                }
+            } else if (this.isDate(str)) {
+                return wrapDateFn(str);
+            } else {
+                throw new Error('toDate: Unable to parse the date');
+            }
         }
     };
     var Dom = function () {
@@ -209,7 +222,7 @@
             table: function (attrs) {
                 return addAttrs(ce('table'), attrs);
             },
-            thead: function(attrs) {
+            thead: function (attrs) {
                 return addAttrs(ce('thead'), attrs);
             },
             tbody: function (attrs) {
@@ -349,11 +362,12 @@
             }
         };
         e.append = e.appendChild;
-        e.appendTo = function(pe){
+        e.appendTo = function (pe) {
             pe.appendChild(this);
             return this;
         };
-    };
+    }
+
     /**
      * Add format function to the date field.
      * @param {Date} dt object
@@ -542,11 +556,11 @@
             dt.isWeekEnd = function () {
                 return this.getDay() === 6 || this.getDay() === 0;
             };
-
         } else {
             throw 'Invalid date object passed, please check "' + dt + '"';
         }
     }
+
     /**
      * Split the date format to array
      * @param {String} format date format
@@ -918,8 +932,8 @@
 
         function panelHeader() {
             var table = Dom.table(),
-                header = Dom.thead();
-                
+                    header = Dom.thead();
+
             header.append(Dom.tr().append(Dom.th().append(drawViews())));
             table.append(header);
             header.append(Dom.tr());

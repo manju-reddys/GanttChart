@@ -28,36 +28,6 @@ if (typeof jQuery === 'undefined') {
 }(this, jQuery, function ($) {
 
     return function () {
-
-        /**
-         * Convert the date format into array of elements, ex: mm/dd/yyyy ==> ['mm', '/', 'dd', '/', 'yyyy']
-         * only supports valid date separator's
-         * @param format
-         */
-        function parseDateFormatStr(format) {
-            var component = '',
-                currentChar = '',
-                separator = /\/\\ -.,'":]/,
-                formatArray = [],
-                charCount = format.length;
-
-            for (var i = 0; i < charCount; i++) {
-                currentChar = format.charAt(i);
-                if (currentChar.match(separator) || (i + 1 === charCount)) {
-                    //At end of string add any non-separator chars to the current component
-                    if ((i + 1 === charCount) && !(currentChar.match(separator))) {
-                        component += currentChar;
-                    }
-
-                    formatArray.push(component);
-                    if (currentChar.match(separator)) {
-                        formatArray.push(currentChar);
-                    }
-                    component = '';
-                }
-            }
-        }
-
         var globalConfig = (function (def) {
             var defaultConfig = {
                 dateInputFormat: 'mm/dd/yyyy', //Default format
@@ -1413,7 +1383,7 @@ if (typeof jQuery === 'undefined') {
                 instance.dLine = function (x1, y1, x2, y2, cssClass) {
                     var dx = x2 - x1, dy = y2 - y1,
                         x = x1, y = y1;
-
+                
                     var n = Math.max(Math.abs(dx), Math.abs(dy));
                     dx = dx / n;
                     dy = dy / n;
